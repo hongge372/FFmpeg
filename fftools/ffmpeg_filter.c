@@ -1,3 +1,4 @@
+#if 0
 /*
  * ffmpeg filter configuration
  *
@@ -1209,3 +1210,4 @@ int filtergraph_is_simple(FilterGraph *fg)
 {
     return !fg->graph_desc;
 }
+#endif

@@ -1,3 +1,4 @@
+#if 0
 /*
  * Copyright (c) 2003 Fabrice Bellard
  *
@@ -3641,7 +3642,7 @@ void show_help_default(const char *opt, const char *arg)
 }
 
 /* Called from the main */
-int main(int argc, char **argv)
+int main1(int argc, char **argv)
 {
     int flags;
     VideoState *is;
@@ -3741,3 +3742,13 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include "transcoding.c"
+#if 0
+int main(int argc, char*argv[])
+{
+  return 0;
+}
+#endif

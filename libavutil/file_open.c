@@ -134,10 +134,12 @@ int avpriv_tempfile(const char *prefix, char **filename, int log_offset, void *l
 #   ifndef O_EXCL
 #       define O_EXCL 0
 #   endif
+    av_log(&file_log_ctx, AV_LOG_ERROR, "ff_tempfile, use open  %s\n", __FUNCTION__, __LINE__ );
     fd = open(*filename, O_RDWR | O_BINARY | O_CREAT | O_EXCL, 0600);
 #else
     snprintf(*filename, len, "/tmp/%sXXXXXX", prefix);
     fd = mkstemp(*filename);
+    av_log(&file_log_ctx, AV_LOG_ERROR, "ff_tempfile, use mkstemp  %s\n", __FUNCTION__, __LINE__ );
 #if defined(_WIN32) || defined (__ANDROID__)
     if (fd < 0) {
         snprintf(*filename, len, "./%sXXXXXX", prefix);
@@ -152,6 +154,8 @@ int avpriv_tempfile(const char *prefix, char **filename, int log_offset, void *l
         av_freep(filename);
         return err;
     }
+    sleep(5);
+    av_log(&file_log_ctx, AV_LOG_ERROR, "ff_tempfile, create success  file %s\n", *filename);
     return fd; /* success */
 }
 

@@ -625,6 +625,10 @@ fail:
 static inline void writer_print_section_header(WriterContext *wctx,
                                                int section_id)
 {
+
+  int abc = 1;
+
+  //aa
     int parent_section_id;
     wctx->level++;
     av_assert0(wctx->level < SECTION_MAX_NB_LEVELS);

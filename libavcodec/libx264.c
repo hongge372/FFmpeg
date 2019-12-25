@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 typedef struct X264Context {
     AVClass        *class;
     x264_param_t    params;

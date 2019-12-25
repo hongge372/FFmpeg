@@ -1,3 +1,4 @@
+//#if 0
 /*
  * Various utilities for command line tools
  * Copyright (c) 2000-2003 Fabrice Bellard
@@ -923,6 +924,7 @@ static void expand_filename_template(AVBPrint *bp, const char *template,
 {
     int c;
 
+#if 0
     while ((c = *(template++))) {
         if (c == '%') {
             if (!(c = *(template++)))
@@ -944,6 +946,7 @@ static void expand_filename_template(AVBPrint *bp, const char *template,
             av_bprint_chars(bp, c, 1);
         }
     }
+#endif
 }
 
 static int init_report(const char *env)
@@ -1006,6 +1009,7 @@ static int init_report(const char *env)
         return ret;
     }
     av_log_set_callback(log_callback_report);
+#if 0
     av_log(NULL, AV_LOG_INFO,
            "%s started on %04d-%02d-%02d at %02d:%02d:%02d\n"
            "Report written to \"%s\"\n",
@@ -1013,6 +1017,7 @@ static int init_report(const char *env)
            tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
            tm->tm_hour, tm->tm_min, tm->tm_sec,
            filename.str);
+#endif
     av_bprint_finalize(&filename, NULL);
     return 0;
 }
@@ -1110,6 +1115,7 @@ static void print_all_libs_info(int flags, int level)
 
 static void print_program_info(int flags, int level)
 {
+#if 0
     const char *indent = flags & INDENT? "  " : "";
 
     av_log(NULL, level, "%s version " FFMPEG_VERSION, program_name);
@@ -1120,6 +1126,7 @@ static void print_program_info(int flags, int level)
     av_log(NULL, level, "%sbuilt with %s\n", indent, CC_IDENT);
 
     av_log(NULL, level, "%sconfiguration: " FFMPEG_CONFIGURATION "\n", indent);
+#endif
 }
 
 static void print_buildconf(int flags, int level)
@@ -1178,6 +1185,7 @@ int show_buildconf(void *optctx, const char *opt, const char *arg)
 
 int show_license(void *optctx, const char *opt, const char *arg)
 {
+#if 0
 #if CONFIG_NONFREE
     printf(
     "This version of %s has nonfree parts compiled in.\n"
@@ -1246,7 +1254,7 @@ int show_license(void *optctx, const char *opt, const char *arg)
     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n",
     program_name, program_name, program_name );
 #endif
-
+#endif
     return 0;
 }
 
@@ -1899,6 +1907,7 @@ static void show_help_filter(const char *name)
 
 int show_help(void *optctx, const char *opt, const char *arg)
 {
+#if 0
     char *topic, *par;
     av_log_set_callback(log_callback_help);
 
@@ -1928,6 +1937,8 @@ int show_help(void *optctx, const char *opt, const char *arg)
     }
 
     av_freep(&topic);
+#endif
+
     return 0;
 }
 
@@ -2273,3 +2284,4 @@ int show_sinks(void *optctx, const char *opt, const char *arg)
 }
 
 #endif
+//#endif

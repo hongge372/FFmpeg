@@ -1,3 +1,4 @@
+#if 0
 /*
  * ffmpeg option parsing
  *
@@ -3677,3 +3678,4 @@ const OptionDef options[] = {
 
     { NULL, },
 };
+#endif
