@@ -3903,7 +3903,7 @@ probe_cc(){
         gcc_extra_ver=$(expr "$($_cc --version 2>/dev/null | head -n1)" : '.*\((.*)\)')
         _ident="llvm-gcc $($_cc -dumpversion 2>/dev/null) $gcc_extra_ver"
         _depflags='-MMD -MF $(@:.o=.d) -MT $@'
-        _cflags_speed='-O3'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
     elif $_cc -v 2>&1 | grep -qi ^gcc; then
         _type=gcc
@@ -3923,15 +3923,15 @@ probe_cc(){
                 warn "gcc 4.2 is outdated and may miscompile FFmpeg. Please use a newer compiler." ;;
             esac
         fi
-        _cflags_speed='-O3'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
     elif $_cc --version 2>/dev/null | grep -q ^icc; then
         _type=icc
         _ident=$($_cc --version | head -n1)
         _depflags='-MMD'
-        _cflags_speed='-O3'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
-        _cflags_noopt='-O1'
+        _cflags_noopt='-O0'
         _flags_filter=icc_flags
     elif $_cc -v 2>&1 | grep -q xlc; then
         _type=xlc
@@ -3943,7 +3943,7 @@ probe_cc(){
         _ident=$($_cc -V | head -n1 | cut -d' ' -f1-3)
         _DEPFLAGS='-M'
         _cflags_speed='-fast'
-        _cflags_size='-O1'
+        _cflags_size='-O0'
         _flags_filter=ccc_flags
     elif $_cc --vsn 2>/dev/null | grep -Eq "ARM (C/C\+\+ )?Compiler"; then
         test -d "$sysroot" || die "No valid sysroot specified."
@@ -3959,7 +3959,7 @@ probe_cc(){
         _flags="--arm_linux_config_file=$armcc_conf --translate_gcc"
         as_default="${cross_prefix}gcc"
         _depflags='-MMD'
-        _cflags_speed='-O3'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
     elif $_cc -version 2>/dev/null | grep -Eq 'TMS470|TI ARM'; then
         _type=tms470
@@ -3968,14 +3968,14 @@ probe_cc(){
         _cc_e='-ppl -fe=$@'
         _cc_o='-fe=$@'
         _depflags='-ppa -ppd=$(@:.o=.d)'
-        _cflags_speed='-O3 -mf=5'
-        _cflags_size='-O3 -mf=2'
+        _cflags_speed='-O0 -mf=5'
+        _cflags_size='-O0 -mf=2'
         _flags_filter=tms470_flags
     elif $_cc -v 2>&1 | grep -q clang; then
         _type=clang
         _ident=$($_cc --version 2>/dev/null | head -n1)
         _depflags='-MMD -MF $(@:.o=.d) -MT $@'
-        _cflags_speed='-O3'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
     elif $_cc -V 2>&1 | grep -q Sun; then
         _type=suncc
@@ -3990,22 +3990,22 @@ probe_cc(){
         _type=pathscale
         _ident=$($_cc -v 2>&1 | head -n1 | tr -d :)
         _depflags='-MMD -MF $(@:.o=.d) -MT $@'
-        _cflags_speed='-O2'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
         _flags_filter='filter_out -Wdisabled-optimization'
     elif $_cc -v 2>&1 | grep -q Open64; then
         _type=open64
         _ident=$($_cc -v 2>&1 | head -n1 | tr -d :)
         _depflags='-MMD -MF $(@:.o=.d) -MT $@'
-        _cflags_speed='-O2'
+        _cflags_speed='-O0'
         _cflags_size='-Os'
         _flags_filter='filter_out -Wdisabled-optimization|-Wtype-limits|-fno-signed-zeros'
     elif $_cc -V 2>&1 | grep -q Portland; then
         _type=pgi
         _ident="PGI $($_cc -V 2>&1 | awk '/^pgcc/ { print $2; exit }')"
         opt_common='-alias=ansi -Mdse -Mlre -Mpre'
-        _cflags_speed="-O3 -Mautoinline -Munroll=c:4 $opt_common"
-        _cflags_size="-O2 -Munroll=c:1 $opt_common"
+        _cflags_speed="-O0 -Mautoinline -Munroll=c:4 $opt_common"
+        _cflags_size="-O0 -Munroll=c:1 $opt_common"
         _cflags_noopt="-O"
         _flags_filter=pgi_flags
     elif $_cc 2>&1 | grep -q 'Microsoft.*ARM.*Assembler'; then
@@ -4018,10 +4018,10 @@ probe_cc(){
         _type=icl
         _ident=$($_cc 2>&1 | head -n1)
         _depflags='-QMMD -QMF$(@:.o=.d) -QMT$@'
-        # Not only is O3 broken on 13.x+ but it is slower on all previous
+        # Not only is O0 broken on 13.x+ but it is slower on all previous
         # versions (tested) as well.
-        _cflags_speed="-O2"
-        _cflags_size="-O1 -Oi" # -O1 without -Oi miscompiles stuff
+        _cflags_speed="-O0"
+        _cflags_size="-O0 -Oi" # -O0 without -Oi miscompiles stuff
         if $_cc 2>&1 | grep -q Linker; then
             _ld_o='-out:$@'
         else
@@ -4043,8 +4043,8 @@ probe_cc(){
         _ident=$($_cc 2>&1 | head -n1)
         _DEPCMD='$(DEP$(1)) $(DEP$(1)FLAGS) $($(1)DEP_FLAGS) $< 2>&1 | awk '\''/including/ { sub(/^.*file: */, ""); gsub(/\\/, "/"); if (!match($$0, / /)) print "$@:", $$0 }'\'' > $(@:.o=.d)'
         _DEPFLAGS='$(CPPFLAGS) $(CFLAGS) -showIncludes -Zs'
-        _cflags_speed="-O2"
-        _cflags_size="-O1"
+        _cflags_speed="-O0"
+        _cflags_size="-O0"
         if $_cc -nologo- 2>&1 | grep -q Linker; then
             _ld_o='-out:$@'
         else
@@ -4062,8 +4062,8 @@ probe_cc(){
         _type=cparser
         _ident=$($_cc --version | head -n1)
         _depflags='-MMD'
-        _cflags_speed='-O4'
-        _cflags_size='-O2'
+        _cflags_speed='-O0'
+        _cflags_size='-O0'
         _flags_filter=cparser_flags
     fi
 
@@ -4591,7 +4591,7 @@ EOF
 add_host_cppflags -D_ISOC99_SOURCE
 check_host_cflags -std=c99
 check_host_cflags -Wall
-check_host_cflags -O3
+check_host_cflags -O0
 
 check_64bit(){
     arch32=$1
