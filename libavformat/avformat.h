@@ -538,7 +538,7 @@ typedef struct AVOutputFormat {
      */
     int priv_data_size;
 
-    int (*write_header)(struct AVFormatContext *);
+    int (*write_header)(struct AVFormatContxet *);
     /**
      * Write a packet. If AVFMT_ALLOW_FLUSH is set in flags,
      * pkt can be NULL in order to flush data buffered in the muxer.

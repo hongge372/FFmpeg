@@ -306,14 +306,19 @@ typedef struct VideoState {
     SDL_cond *continue_read_thread;
 } VideoState;
 
+static int wwidth=1920;
+static int wheight=1080;
+
 /* options specified by the user */
 static AVInputFormat *file_iformat;
 static const char *input_filename;
 static const char *window_title;
 static int default_width  = 640;
 static int default_height = 480;
-static int screen_width  = 0;
-static int screen_height = 0;
+
+static int screen_width  = 1920;
+static int screen_height = 1080;
+
 static int screen_left = SDL_WINDOWPOS_CENTERED;
 static int screen_top = SDL_WINDOWPOS_CENTERED;
 static int audio_disable;
@@ -1743,8 +1748,8 @@ static int queue_picture(VideoState *is, AVFrame *src_frame, double pts, double 
     vp->sar = src_frame->sample_aspect_ratio;
     vp->uploaded = 0;
 
-    vp->width = src_frame->width;
-    vp->height = src_frame->height;
+    vp->width = src_frame->width*2;
+    vp->height = src_frame->height*2;
     vp->format = src_frame->format;
 
     vp->pts = pts;
@@ -3436,7 +3441,7 @@ static void event_loop(VideoState *cur_stream)
         case SDL_WINDOWEVENT:
             switch (event.window.event) {
                 case SDL_WINDOWEVENT_RESIZED:
-                    screen_width  = cur_stream->width  = event.window.data1;
+//                    screen_width  = cur_stream->width  = event.window.data1;
                     screen_height = cur_stream->height = event.window.data2;
                     if (cur_stream->vis_texture) {
                         SDL_DestroyTexture(cur_stream->vis_texture);

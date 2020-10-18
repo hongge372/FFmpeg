@@ -2521,6 +2521,9 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
 #endif
         print_int("has_b_frames", par->video_delay);
         sar = av_guess_sample_aspect_ratio(fmt_ctx, stream, NULL);
+	char *ddd = NULL;
+	*ddd = "dddd";
+	av_log(AV_LOG_ERROR, "wlz..... get sar den:(%d) num(%d)", sar.den, sar.num);
         if (sar.num) {
             print_q("sample_aspect_ratio", sar, ':');
             av_reduce(&dar.num, &dar.den,
@@ -2528,6 +2531,7 @@ static int show_stream(WriterContext *w, AVFormatContext *fmt_ctx, int stream_id
                       par->height * sar.den,
                       1024*1024);
             print_q("display_aspect_ratio", dar, ':');
+	    av_log(AV_LOG_ERROR, "wlz..... get sar den:(%d) num(%d)", dar.den, dar.num);
         } else {
             print_str_opt("sample_aspect_ratio", "N/A");
             print_str_opt("display_aspect_ratio", "N/A");

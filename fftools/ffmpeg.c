@@ -4837,7 +4837,8 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
 {
 }
 
-int main(int argc, char **argv)
+
+static int main2(int argc, char **argv)
 {
     int i, ret;
     BenchmarkTimeStamps ti;
@@ -4908,3 +4909,131 @@ int main(int argc, char **argv)
     exit_program(received_nb_signals ? 255 : main_return_code);
     return main_return_code;
 }
+
+typedef struct audio_insert_str{
+    char *start_time;
+    char *duration_time;
+    float *insert_time;
+    char *input;
+}AInsert;
+
+#define MAX_TRACK_NUM 16
+typedef struct audio_tracks{
+    int count;
+    char path[32];
+}ATracks;
+
+int track_num =0;
+
+int audio_index = 0;
+ATracks tracks[MAX_TRACK_NUM];
+
+atrack_flush(){
+    int 
+}
+
+static int atrack_puge(){
+    track_num = 0;
+    memset(&tracks[0], 0, sizeof(ATracks)*MAX_TRACK_NUM);
+    return 0;
+}
+
+static int atrack_add(AInsert *insert){
+    printf("wlz dump running av_merge %s %d \n", __FUNCTION__, __LINE__);
+    float start=0, duration=0, pos=0;
+    int using_result = 0;
+    char output[32]={0};
+    char output2[32]={0};
+    
+    if(insert->start_time){
+        start = atof(insert->start_time);
+    }
+    if(insert->duration_time){
+        duration = atof(insert->duration_time);
+    }
+    if(insert->insert_time){
+        pos = atof(insert->insert_time);
+    }
+    
+    printf("wlz dump running av_merge %s %d \n", __FUNCTION__, __LINE__);
+    printf("wlz dump running av_merge start:%f \n", start);
+    if(start >= 0.001){
+        using_result = 1;
+        printf("wlz dump running av_merge duration:%f \n", duration);
+        if(duration > 0.001){
+            snprintf(output, 32, "/tmp/%d.aac", audio_index++);
+            printf("wlz dump running av_merge %s %d \n", __FUNCTION__, __LINE__);
+            const char *audio_argv[]={
+                "ffmpeg",
+                "-y",
+                "-i",
+                insert->input,
+                "-ss",
+                insert->start_time,
+                "-t",
+                insert->duration_time,
+                "-acodec",
+                "copy",
+                output
+            };
+            int arg_num = sizeof(audio_argv[0]);
+            printf("dump cmd num: %d \n", arg_num);
+        }else{
+            snprintf(output, 32, "/tmp/%d.aac", audio_index++);
+            const char *audio_argv[]={
+                "ffmpeg",
+                "-y",
+                "-i",
+                insert->input,
+                "-ss",
+                insert->start_time,
+                "-acodec",
+                "copy",
+                output
+            };
+            int arg_num = sizeof(audio_argv[0]);
+            printf("dump cmd num: %d \n", arg_num);
+        }
+    }
+    if(pos < 0.001){
+        goto
+            end;
+    }
+
+    snprintf(output2, 32, "/tmp/%d.aac", audio_index++);
+    char afilter[64]={0};
+    snprintf(afilter, 64,  "adelay=%s|%s", insert->insert_time, insert->insert_time);
+    const char *audio_argv[]={
+        "ffmpeg",
+        "-y",
+        "-i",
+        output,
+        "-acodec",
+        "copy",
+        "-filter_complex",
+        afilter,
+        output2
+    };
+    int arg_num = sizeof(audio_argv[0]);
+    printf("dump cmd num: %d \n", arg_num);
+    
+end:
+    tracks[track_num].count = track_num;
+    strcpy(tracks[track_num].path,output);
+    track_num++;        
+    return 0;
+}
+
+int main(int argc, char **argv){
+    AInsert *insert = (AInsert *)malloc(sizeof(AInsert));
+    insert->start_time = "2.333";
+    insert->duration_time = "5";
+    insert->insert_time = "3";
+    insert->input = "/Users/yixia/bak/video/aac/woxingwosu.aac";
+
+    atrack_add(insert);
+    atrack_flush();
+    atrack_puge();
+    return 0;
+}
+
