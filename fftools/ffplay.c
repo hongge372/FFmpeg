@@ -60,6 +60,7 @@
 
 #include <assert.h>
 
+#include "super_cut.h"
 #include "hlsproto.c"
 #include "hlsplaylist.c"
 
@@ -3645,6 +3646,7 @@ void show_help_default(const char *opt, const char *arg)
            );
 }
 
+#if 0
 /* Called from the main */
 int main(int argc, char **argv)
 {
@@ -3742,3 +3744,12 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#else
+int main(int argc, char *argv[])
+{
+    HLSContext *hls_context = (HLSContext *)malloc(sizeof(HLSContext));
+    hls_context->playlisturl = "http://114.230.94.112:80/video/hls/kongfupanda4/640x480/index.m3u8";
+    super_cut_hls_open(hls_context, "", 0);
+    return 0;
+}
+#endif

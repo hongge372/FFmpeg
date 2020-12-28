@@ -20,22 +20,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "config.h"
-#include <stdint.h>
+#include "super_cut.h"
 
-#include "libavutil/time_internal.h"
-
-#include "avformat.h"
-#include "hlsplaylist.h"
-
-void ff_hls_write_playlist_version(AVIOContext *out, int version) {
+void super_cut_hls_write_playlist_version(AVIOContext *out, int version) {
     if (!out)
         return;
     avio_printf(out, "#EXTM3U\n");
     avio_printf(out, "#EXT-X-VERSION:%d\n", version);
 }
 
-void ff_hls_write_audio_rendition(AVIOContext *out, char *agroup,
+void super_cut_hls_write_audio_rendition(AVIOContext *out, char *agroup,
                                   char *filename, int name_id, int is_default) {
     if (!out || !agroup || !filename)
         return;
@@ -45,7 +39,7 @@ void ff_hls_write_audio_rendition(AVIOContext *out, char *agroup,
                      is_default ? "YES" : "NO", filename);
 }
 
-void ff_hls_write_stream_info(AVStream *st, AVIOContext *out,
+void super_cut_hls_write_stream_info(AVStream *st, AVIOContext *out,
                               int bandwidth, char *filename, char *agroup) {
     if (!out || !filename)
         return;
@@ -65,12 +59,12 @@ void ff_hls_write_stream_info(AVStream *st, AVIOContext *out,
     avio_printf(out, "\n%s\n\n", filename);
 }
 
-void ff_hls_write_playlist_header(AVIOContext *out, int version, int allowcache,
+void super_cut_hls_write_playlist_header(AVIOContext *out, int version, int allowcache,
                                   int target_duration, int64_t sequence,
                                   uint32_t playlist_type) {
     if (!out)
         return;
-    ff_hls_write_playlist_version(out, version);
+    super_cut_hls_write_playlist_version(out, version);
     if (allowcache == 0 || allowcache == 1) {
         avio_printf(out, "#EXT-X-ALLOW-CACHE:%s\n", allowcache == 0 ? "NO" : "YES");
     }
@@ -85,7 +79,7 @@ void ff_hls_write_playlist_header(AVIOContext *out, int version, int allowcache,
     }
 }
 
-void ff_hls_write_init_file(AVIOContext *out, char *filename,
+void super_cut_hls_write_init_file(AVIOContext *out, char *filename,
                             int byterange_mode, int64_t size, int64_t pos) {
     avio_printf(out, "#EXT-X-MAP:URI=\"%s\"", filename);
     if (byterange_mode) {
@@ -94,7 +88,7 @@ void ff_hls_write_init_file(AVIOContext *out, char *filename,
     avio_printf(out, "\n");
 }
 
-int ff_hls_write_file_entry(AVIOContext *out, int insert_discont,
+int super_cut_hls_write_file_entry(AVIOContext *out, int insert_discont,
                              int byterange_mode,
                              double duration, int round_duration,
                              int64_t size, int64_t pos, //Used only if HLS_SINGLE_FILE flag is set
@@ -122,7 +116,7 @@ int ff_hls_write_file_entry(AVIOContext *out, int insert_discont,
         milli = av_clip(lrint(1000*(*prog_date_time - tt)), 0, 999);
         tm = localtime_r(&tt, &tmpbuf);
         if (!strftime(buf0, sizeof(buf0), "%Y-%m-%dT%H:%M:%S", tm)) {
-            av_log(NULL, AV_LOG_DEBUG, "strftime error in ff_hls_write_file_entry\n");
+            av_log(NULL, AV_LOG_DEBUG, "strftime error in super_cut_hls_write_file_entry\n");
             return AVERROR_UNKNOWN;
         }
         if (!strftime(buf1, sizeof(buf1), "%z", tm) || buf1[1]<'0' ||buf1[1]>'2') {
@@ -147,7 +141,7 @@ int ff_hls_write_file_entry(AVIOContext *out, int insert_discont,
     return 0;
 }
 
-void ff_hls_write_end_list (AVIOContext *out) {
+void super_cut_hls_write_end_list (AVIOContext *out) {
     if (!out)
         return;
     avio_printf(out, "#EXT-X-ENDLIST\n");

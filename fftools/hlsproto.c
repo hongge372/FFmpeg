@@ -25,13 +25,7 @@
  * http://tools.ietf.org/html/draft-pantos-http-live-streaming
  */
 
-#include "libavutil/avstring.h"
-#include "libavutil/time.h"
-#include "avformat.h"
-#include "avio_internal.h"
-#include "internal.h"
-#include "url.h"
-#include "version.h"
+#include "super_cut.h"
 
 /*
  * An apple http stream consists of a playlist with media segment files,
@@ -180,7 +174,7 @@ fail:
     return ret;
 }
 
-static int hls_close(URLContext *h)
+static int super_cut_hls_close(URLContext *h)
 {
     HLSContext *s = h->priv_data;
 
@@ -190,7 +184,7 @@ static int hls_close(URLContext *h)
     return 0;
 }
 
-static int hls_open(URLContext *h, const char *uri, int flags)
+static int super_cut_hls_open(URLContext *h, const char *uri, int flags)
 {
     HLSContext *s = h->priv_data;
     int ret, i;
@@ -250,11 +244,11 @@ static int hls_open(URLContext *h, const char *uri, int flags)
     return 0;
 
 fail:
-    hls_close(h);
+    super_cut_hls_close(h);
     return ret;
 }
 
-static int hls_read(URLContext *h, uint8_t *buf, int size)
+static int super_cut_hls_read(URLContext *h, uint8_t *buf, int size)
 {
     HLSContext *s = h->priv_data;
     const char *url;
@@ -318,11 +312,11 @@ retry:
     goto start;
 }
 
-const URLProtocol ff_hls_protocol = {
-    .name           = "hls",
-    .url_open       = hls_open,
-    .url_read       = hls_read,
-    .url_close      = hls_close,
+const URLProtocol super_cut_hls_protocol = {
+    .name           = "super_cut_hls",
+    .url_open       = super_cut_hls_open,
+    .url_read       = super_cut_hls_read,
+    .url_close      = super_cut_hls_close,
     .flags          = URL_PROTOCOL_FLAG_NESTED_SCHEME,
     .priv_data_size = sizeof(HLSContext),
 };
