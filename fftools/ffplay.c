@@ -60,6 +60,10 @@
 
 #include <assert.h>
 
+#include "hlsproto.c"
+#include "hlsplaylist.c"
+
+
 const char program_name[] = "ffplay";
 const int program_birth_year = 2003;
 
