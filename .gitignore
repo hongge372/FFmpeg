@@ -24,6 +24,9 @@
 *_g
 \#*
 .\#*
+GPATH
+GRTAGS
+GTAGS
 /.config
 /.version
 /ffmpeg
